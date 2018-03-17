@@ -6,13 +6,14 @@ export class PolygonsListComponent {
 
     public polygons: GuardedPolygon[];
     public mountNode: Element;
-    private selectedPolygon: GuardedPolygon;
-    private itemWidth: number = 100;
-    private itemHeight: number = 60;
     public fillColor: string;
     public strokeColor: string;
 
     public onSelectedItemCallback: Function;
+
+    private selectedPolygon: GuardedPolygon;
+    private itemWidth: number = 100;
+    private itemHeight: number = 60;
 
     constructor(fillColor: string, strokeColor:string) {
         this.fillColor = fillColor;

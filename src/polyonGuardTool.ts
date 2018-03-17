@@ -4,6 +4,7 @@ import {GuardedPolygon} from './guardedPolygon';
 import {HTML_SVG_CONST} from './util';
 
 export class PolygonGuardTool {
+
     public polygon: GuardedPolygon;
     public vizGroup: any;
     public triangleGroup: any;
@@ -11,6 +12,7 @@ export class PolygonGuardTool {
     public guardGroup: any;
 
     private svg: any;
+
     constructor(polygon?: GuardedPolygon) {
         this.polygon = polygon;
     }
@@ -32,139 +34,10 @@ export class PolygonGuardTool {
         this.drawCircles();
         this.drawTriangles();
     }
+
     public unmount() {
         this.svg.remove();
         this.svg = null;
-    }
-
-    private drawCircles() {
-        let points = this.polygon.getPoints();
-        let p = [];
-
-        for (let i = 0; i < points.length / 2; i++) {
-            p.push([points[i * 2], points[i * 2 + 1]]);
-        }
-        console.log('--- new circle', p);
-
-        let circles = this.circleGroup.selectAll('.circles')
-            .data(p);
-
-        let self = this;
-        let enterSelection = circles.enter()
-            .append('circle')
-            .attr(HTML_SVG_CONST.r, 4)
-            .attr(HTML_SVG_CONST.fill, 'blue')
-            .attr(HTML_SVG_CONST.stroke, '#000')
-            .attr('is-handle', 'true')
-            .attr('class', 'circles')
-            .attr('id', (d, i) => `circle-${i}`)
-            .style('cursor', 'pointer')
-            .on('click', function(d,i) {
-                self.circleClick(d, i, this)
-            });
-
-        circles.merge(enterSelection)
-            .attr(HTML_SVG_CONST.cx, d => d[0])
-            .attr(HTML_SVG_CONST.cy, d => d[1]);
-
-        circles.exit().remove();
-    }
-
-    private circleClick(coordinates, vertexIndex, node) {
-        this.polygon.addGuard(vertexIndex);
-        this.updeGuardOnNode(node, vertexIndex);
-        this.drawTriangles();
-        this.updateGuardSection()
-        this.checkSolved();
-    }
-
-    public checkSolved() {
-        let selection = d3.select('.complete');
-        if (this.polygon.isSolved()) {
-            // do some amazing tstuff
-            selection.html(`Got it, you used ${this.polygon.getNumberOfGuards()} guards`);
-        } else {
-            selection.html('NOT SOLVED !');
-        }
-    }
-
-    private updeGuardOnNode(node, vertexIndex) {
-        // not very efficient, we can have addGuard return a boolean and pass it
-        console.log('UPDATE GUARD', vertexIndex);
-        let guarded = this.polygon.guardPosition.has(vertexIndex);
-        d3.select(node)
-            .transition()
-            .duration(200)
-            .attr('r', 20)
-            .transition()
-            .attr('fill', guarded ? 'red' : 'blue')
-            .duration(100)
-            .attr('r', 5);
-    }
-
-    private updateGuardSection() {
-        let guards = Array.from(this.polygon.guardPosition);
-        let guardSelection = this.guardGroup
-            .selectAll('.guard')
-            .data(guards);
-        guardSelection.enter()
-            .append('div')
-            .classed('guard', true)
-            .on('click', (d, i) => {
-                let node = this.circleGroup.select(`circle#circle-${d}`);
-                this.circleClick(null, d, node._groups[0][0])
-            });
-        guardSelection.exit()
-            .remove();
-    }
-
-    private drawPolygon() {
-        //svg.select('g.drawPoly').remove();
-        let points = this.polygon.getPoints();
-        this.vizGroup.select('polygon').remove();
-        this.vizGroup.append('polygon')
-            .attr('points', points)
-            .attr(HTML_SVG_CONST.stroke, 'black')
-            .style(HTML_SVG_CONST.fill, '#33FFFF');
-
-    }
-
-
-    // this is a bit ugly, as we do not reuse the API defined in the tool
-    private drawTriangles() {
-        // we can drop vertex that are part of the polygons
-        let triangles = [];
-
-        let striangles = (<any>this.polygon).setOfTriangles;
-        // let's put that eagerly
-        striangles.forEach(triangle => {
-            let points = triangle.points.reduce((acc, vertexIdx) => {
-                // it's nice when thing plug in naturally together :)
-                acc.push(triangle.belongingPolygon.getPoints()[vertexIdx * 2],
-                    triangle.belongingPolygon.getPoints()[vertexIdx * 2 + 1]);
-                return acc;
-            }, []);
-            triangles.push(points);
-            points.guarded = triangle.guarded; // a bit ugly
-        });
-
-        console.log('NEW TRIANGLE', triangles);
-
-        let selection = this.triangleGroup.selectAll('.draw-triangles')
-            .data(triangles);
-
-        let selectionEnter = selection
-            .enter()
-            .append('polygon')
-            .attr('id', (d, i) => `triangle-${d[0]}${d[1]}${d[2]}${d[3]}${d[4]}${d[5]}`)
-            .attr('class', 'draw-triangles');
-
-        selection.merge(selectionEnter)
-            .attr('points', d => d)
-            .attr(HTML_SVG_CONST.stroke, 'black')
-            .attr(HTML_SVG_CONST.fill, d => d.guarded ? 'red' : 'green');
-
-        selection.exit().remove();
     }
 
     public solve(flattenedSteps: any[]) {
@@ -219,5 +92,135 @@ export class PolygonGuardTool {
                 getTransition(step, nextTransition)
             })
         }
+    }
+
+    public checkSolved() {
+        let selection = d3.select('.complete');
+        if (this.polygon.isSolved()) {
+            // do some amazing tstuff
+            selection.html(`Got it, you used ${this.polygon.getNumberOfGuards()} guards`);
+        } else {
+            selection.html('NOT SOLVED !');
+        }
+    }
+
+    private updeGuardOnNode(node, vertexIndex) {
+        // not very efficient, we can have addGuard return a boolean and pass it
+        console.log('UPDATE GUARD', vertexIndex);
+        let guarded = this.polygon.guardPosition.has(vertexIndex);
+        d3.select(node)
+            .transition()
+            .duration(200)
+            .attr('r', 20)
+            .transition()
+            .attr('fill', guarded ? 'red' : 'blue')
+            .duration(100)
+            .attr('r', 5);
+    }
+
+    private updateGuardSection() {
+        let guards = Array.from(this.polygon.guardPosition);
+        let guardSelection = this.guardGroup
+            .selectAll('.guard')
+            .data(guards);
+        guardSelection.enter()
+            .append('div')
+            .classed('guard', true)
+            .on('click', (d, i) => {
+                let node = this.circleGroup.select(`circle#circle-${d}`);
+                this.circleClick(null, d, node._groups[0][0])
+            });
+        guardSelection.exit()
+            .remove();
+    }
+
+    private drawCircles() {
+        let points = this.polygon.getPoints();
+        let p = [];
+
+        for (let i = 0; i < points.length / 2; i++) {
+            p.push([points[i * 2], points[i * 2 + 1]]);
+        }
+        console.log('--- new circle', p);
+
+        let circles = this.circleGroup.selectAll('.circles')
+            .data(p);
+
+        let self = this;
+        let enterSelection = circles.enter()
+            .append('circle')
+            .attr(HTML_SVG_CONST.r, 4)
+            .attr(HTML_SVG_CONST.fill, 'blue')
+            .attr(HTML_SVG_CONST.stroke, '#000')
+            .attr('is-handle', 'true')
+            .attr('class', 'circles')
+            .attr('id', (d, i) => `circle-${i}`)
+            .style('cursor', 'pointer')
+            .on('click', function(d,i) {
+                self.circleClick(d, i, this)
+            });
+
+        circles.merge(enterSelection)
+            .attr(HTML_SVG_CONST.cx, d => d[0])
+            .attr(HTML_SVG_CONST.cy, d => d[1]);
+
+        circles.exit().remove();
+    }
+
+    private drawPolygon() {
+        //svg.select('g.drawPoly').remove();
+        let points = this.polygon.getPoints();
+        this.vizGroup.select('polygon').remove();
+        this.vizGroup.append('polygon')
+            .attr('points', points)
+            .attr(HTML_SVG_CONST.stroke, 'black')
+            .style(HTML_SVG_CONST.fill, '#33FFFF');
+
+    }
+
+
+    private circleClick(coordinates, vertexIndex, node) {
+        this.polygon.addGuard(vertexIndex);
+        this.updeGuardOnNode(node, vertexIndex);
+        this.drawTriangles();
+        this.updateGuardSection()
+        this.checkSolved();
+    }
+
+    // this is a bit ugly, as we do not reuse the API defined in the tool
+    private drawTriangles() {
+        // we can drop vertex that are part of the polygons
+        let triangles = [];
+
+        let striangles = (<any>this.polygon).setOfTriangles;
+        // let's put that eagerly
+        striangles.forEach(triangle => {
+            let points = triangle.points.reduce((acc, vertexIdx) => {
+                // it's nice when thing plug in naturally together :)
+                acc.push(triangle.belongingPolygon.getPoints()[vertexIdx * 2],
+                    triangle.belongingPolygon.getPoints()[vertexIdx * 2 + 1]);
+                return acc;
+            }, []);
+            triangles.push(points);
+            points.guarded = triangle.guarded; // a bit ugly
+        });
+
+        console.log('NEW TRIANGLE', triangles);
+
+        let selection = this.triangleGroup.selectAll('.draw-triangles')
+            .data(triangles);
+
+        let selectionEnter = selection
+            .enter()
+            .append('polygon')
+            .attr('id', (d, i) => `triangle-${d[0]}${d[1]}${d[2]}${d[3]}${d[4]}${d[5]}`)
+            .attr('class', 'draw-triangles');
+
+        selection.merge(selectionEnter)
+            .attr('points', d => d)
+            .attr(HTML_SVG_CONST.stroke, 'black')
+            .attr(HTML_SVG_CONST.fill, d => d.guarded ? 'red' : 'green');
+
+        selection.exit().remove();
     }
 }

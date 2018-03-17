@@ -30,13 +30,12 @@ class Triangle  {
 
 export class TriangulatedPolygon extends Polygon {
 
-    private triangles: number[] = [];
-
     protected setOfTriangles: Set<Triangle>;
     protected vertixIdxToTriangles: Set<Triangle>[] = [];
     protected vertexIdxToOrderedTriangles: Array<Array<Triangle>> = [];
     protected numTriangles = 0;
 
+    private triangles: number[] = [];
 
     constructor(points: number[]) {
         super(points);

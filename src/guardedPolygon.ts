@@ -42,19 +42,6 @@ export class GuardedPolygon extends TriangulatedPolygon {
         return this.guardedTriangle >= this.numTriangles;
     }
 
-    private updateGuardedTriangle() {
-        this.guardedTriangle = 0;
-        this.setOfTriangles.forEach(t => t.guarded = false);
-        this.guardPosition.forEach(guardVertexIndex => {
-            this.vertixIdxToTriangles[guardVertexIndex].forEach(triangle => {
-                if (!triangle.guarded) {
-                    triangle.guarded = true;
-                    this.guardedTriangle++;
-                }
-            });
-        });
-    }
-
     // give back all the steps
     public solve(): any[] {
         let steps: any[] = [];
@@ -73,7 +60,18 @@ export class GuardedPolygon extends TriangulatedPolygon {
         return flattenedSteps;
     }
 
-
+    private updateGuardedTriangle() {
+        this.guardedTriangle = 0;
+        this.setOfTriangles.forEach(t => t.guarded = false);
+        this.guardPosition.forEach(guardVertexIndex => {
+            this.vertixIdxToTriangles[guardVertexIndex].forEach(triangle => {
+                if (!triangle.guarded) {
+                    triangle.guarded = true;
+                    this.guardedTriangle++;
+                }
+            });
+        });
+    }
 
 // This reminds me some old graph theory,
 // so there might be another way to do it right

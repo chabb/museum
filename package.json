@@ -1,6 +1,6 @@
 {
-  "name": "babel-typescript-sample",
-  "version": "0.7.0",
+  "name": "museum",
+  "version": "0.1.0",
   "license": "MIT",
   "scripts": {
     "build_bundle": "babel src --out-dir lib --extensions \".ts,.tsx\" && webpack",

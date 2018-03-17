@@ -3,9 +3,9 @@
 
 # How do I run it?
 
-You'll need to install the dependencies and build the repo
+You'll need to install the dependencies and build the application
 
-##Install dependencies
+## Install dependencies
 ```sh
 npm i
 ```

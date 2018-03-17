@@ -13,12 +13,15 @@ import {GuardedPolygon} from './guardedPolygon';
 import {PolygonDrawingTool} from './polygonDrawingTool';
 import {PolygonGuardTool} from './polyonGuardTool';
 import {PolygonsListComponent} from './polygonList';
-import {ready} from './util';
+import {findTriangleCenter, ready, HTML_SVG_CONST, dividePoint, trianglePath} from './util';
 import {buggy, combShape, combShape3, combShape4, hell, shape2, shape3, square, triangle} from './polygons';
+import {drawTriangle} from './tutoTriangle';
+
+
 
 ready(main);
 
-let guardTool: PolygonGuardTool, tool, list;
+let guardTool: PolygonGuardTool, tool, list, tuto;
 
 function main() {
 
@@ -52,7 +55,8 @@ function main() {
         let ratio = h / w;
         let targetWidth = 400;
         let targetHeight = targetWidth * ratio;
-        // matrix transformation would be a better way
+        // matrix transformation or changing the viewport
+        // would be a better way, especially if we want to manage resizing
         let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()]).range([w / 2 - targetWidth, w / 2 + targetWidth]);
         let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()]).range([h / 2 - targetHeight, h / 2 + targetHeight]);
         for (let i = 0; i < points.length / 2; i++) {
@@ -68,7 +72,12 @@ function main() {
         list.hide();
         switchToGuardMode(polygon);
     };
-    tool.mount();
+    //tool.mount();
+
+    tuto = new Tutorial();
+    tuto.stepsText = tutorialSteps;
+    tuto.stepsCallback  = [ firstStep, () => {}];
+    tuto.start();
 }
 
 
@@ -106,6 +115,104 @@ function switchToMuseumMode() {
     d3.select('.toolbar-header').html('SELECT A GORGONZOLA');
 }
 
+export class Tutorial {
+    public stepsText: string[] = [];
+    public stepsCallback: Function[] = [];
+
+    constructor() {
+
+    }
+    public start() {
+        this.executeStep(0);
+    }
+
+    public goToNextStep() {
+
+    }
+
+    public goToPreviousStep() {
+
+    }
+
+    private executeStep(step: number) {
+        // do something nicer
+        d3.select('.intro-content')
+            .transition()
+            .duration(500)
+            .style(HTML_SVG_CONST.opacity, 0).on('end', () => {
+                d3.select('.intro-content').html(
+                    this.stepsText[step]
+                ).transition()
+                    .duration(500)
+                    .style(HTML_SVG_CONST.opacity, 1);
+        });
+
+
+        this.stepsCallback[step]();
+    }
+}
+
+
+// this part is quite ad-hoc and sketchy, I rushed it a little
+let firstStep = () => {
+    // ugly copy-pasting
+    let baseSelection = d3.select('#drawing-canvas');
+    //drawTriangle(triangle, baseSelection);
+    drawTriangle(square.slice(0, 6), baseSelection);
+    drawTriangle([square[0], square[1], square[6], square[7], square[4], square[5]], baseSelection);
+};
+
+let secondStep = () => {``
+    let baseSelection = d3.select('#drawing-canvas');
+
+    drawTriangle(square.slice(0, 3), baseSelection);
+    drawTriangle(square.slice(3, 5), baseSelection);
+};
+
+let thirdStep = () => {
+
+};
+
+let fourthStep = () => {
+
+};
+
+let fifthStep = () => {
+
+};
+
+let sixthStep = () => {
+
+}
+
+
+
 
 // Ideally we should have string.ts file that exposes strings, this file would be generated when the user load
 // the app, but this is out of the scope of this project
+
+let tutorialSteps = [
+    'How many guards do we need for guarding a museum ? This looks like a complex problem, but we can try to approach' +
+    'the solution with some simple intuitions. Let\'s look at a triangle. We can see that we only need one guard. The ' +
+    ' guard can see all the point',
+    'Let\'s try the same the thing with a square; if we look at this square, we see that we can split it into two triangles. ' +
+    'So we can say that we need at most two guards, one for each triangle. ',
+    'And if we look at any arbitrary polygon, it seems that we can break it into multiple triangles. And actually this is a proven fact.' +
+    ' So we have a first intuition that if a shape can be broken into n triangles, then we need at most n guards',
+    ' Now if we go back to our square, we can see that if we place a guard at the right place, then two triangles will be guarded,' +
+        'So we have an intuition that if we place a guard at one vertex, then it will guard all the triangles that use this vertex ' +
+       'We can use this knowledge to have less guard',
+    ' If we go back to our triangle, what we want is to have only one guard for it. We know the guard will be positioned on one' +
+    ' vertex. We can assign a different color to each vertex, red for the guard, green and blue for he others',
+    ' Now, if we have multiple triangles, we want to keep this coloring scheme, so we will minimize the number of guards',
+    ' So the trick is to start with the first vertex, put one guard, then put the two other colors, and then colorize triangles' +
+        ' that share the a common edge with the triangle we just colorize',
+    ' Now think about it where do we put our colors ? On every vertices, so we have n vertices to color. That means that' +
+    ' the addition of the red vertex, the blue vertex, the green vertex should equal the number of vertix. ' +
+    ' Now our goal is to minimize the number of red vertex, so we can safely write r < g, r < b' +
+        ' With that it mind, suppose that r/3 would be greather that n. Then g and b would be greather than n/3. But then' +
+        ' r + g + b would be greater than n. So we can say that r is at most n/3, and so we have an upper bound of n/3 for' +
+    ' the number of guards',
+    ' Now you can try to colorize some museum to convince yourself'
+];
+
