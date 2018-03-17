@@ -1,0 +1,135 @@
+
+
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.nav {
+    position: fixed;
+    width: 100%;
+    border-bottom: 1px solid #d4d4d4;
+    background: #fbfbfb;
+    z-index: 400;
+}
+
+.logo a {
+    text-indent: -9999px;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-image: url('./assets/images/logos.png');
+    background-size: 179px 109px;
+    overflow: hidden;
+    display: block;
+    width: 179px;
+    height: 32px;
+}
+
+.content {
+    margin-top: 33px;
+    display: flex;
+    flex-direction: row;
+    background-color: antiquewhite;
+    flex-grow: 1;
+}
+
+.main-content {
+    flex-grow: 1;
+    flex-basis: 0;
+    flex-shrink: 0;
+}
+
+.toolbar {
+    flex-basis: 300px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.toolbar-actions {
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 200px;
+    padding: 15px;
+}
+
+.polygons-list {
+    padding: 15px;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 200px;
+    background-color: darkgray;
+}
+
+.toolbar-actions, .polygons-list {
+    display: flex;
+}
+
+.tool-content {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    border-radius: 5px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+}
+.shapes-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+}
+.shapes-preview::-webkit-scrollbar {
+    background-color: antiquewhite;
+}
+
+.shapes-preview::-webkit-scrollbar-thumb{
+    background-color:lightpink;
+}
+
+
+.shapes-preview > svg {
+    margin:15px;
+    overflow:visible;
+    transition-property: transform;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-out;
+    transform-origin: center;
+    cursor: pointer;
+}
+
+.shapes-preview > svg:hover {
+    transform: scale(1.5, 1.5);
+
+}
+.hidden {
+    display: none;
+}
+
+.guard {
+    width: 40px;
+    height: 100px;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-image: url('./assets/images/guard.png');
+    display: inline-block;
+    transition: 0.2s filter linear, 0.2s -webkit-filter linear;
+    cursor: pointer;
+}
+
+.guard:hover {
+    filter: grayscale(1.0);
+}
+
+.solve {
+    cursor: pointer;
+}
+
+.try_another {
+    cursor: pointer;
+}
