@@ -17,7 +17,7 @@ import {PolygonGuardTool} from './polyonGuardTool';
 import {PolygonsListComponent} from './polygonList';
 import {buggy, combShape, combShape3, combShape4, hell, shape2, shape3, square, triangle} from './polygons';
 import {drawTriangle} from './tutoTriangle';
-import {ready, HTML_SVG_CONST} from './util';
+import {ready, HTML_SVG_CONST, findTriangleCenter, trianglePath} from './util';
 
 ready(main);
 
@@ -53,12 +53,15 @@ function main() {
         let w = bbox.width;
         let h = bbox.height;
         let ratio = h / w;
-        let targetWidth = 400;
-        let targetHeight = targetWidth * ratio;
+        let padding = 50;
+        let targetWidth = (w - padding * 2) / 2;
+        let targetHeight = (targetWidth * ratio) / 2;
         // matrix transformation or changing the viewport
         // would be a better way, especially if we want to manage resizing
-        let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()]).range([w / 2 - targetWidth, w / 2 + targetWidth]);
-        let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()]).range([h / 2 - targetHeight, h / 2 + targetHeight]);
+        let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()])
+            .range([w / 2 - targetWidth, w / 2 + targetWidth]);
+        let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()])
+            .range([h / 2 - targetHeight, h / 2 + targetHeight]);
         for (let i = 0; i < points.length / 2; i++) {
             scaledPoint.push(scaleX(points[i * 2]));
             scaledPoint.push(scaleY(points[i * 2 + 1]));
@@ -77,8 +80,15 @@ function main() {
     tuto = new Tutorial();
     tuto.stepsText = tutorialSteps;
     tuto.stepsCallback  = [ firstStep, secondStep, thirdStep, fourthStep, fifthStep, sixthStep];
-    tuto.mount('.next', '.preview', '.skip');
+    tuto.skipCallback = () => {
+        tuto._unMount();
+        list.show();
+        d3.select('.intro-navigation').classed('hidden', true);
+    };
+    tuto.mount('.next', '.previous', '.skip');
+
     tuto.start();
+    list.hide();
 }
 
 
@@ -122,7 +132,7 @@ export class Tutorial {
 
     public currentStep = 0;
     public _unMount: Function;
-
+    public skipCallback: Function;
 
     constructor() {
 
@@ -131,6 +141,7 @@ export class Tutorial {
     public mount(nextSelector, previousSelector, skipSelector) {
         d3.select(nextSelector).on('click', () => this.goToNextStep());
         d3.select(previousSelector).on('click', () => this.goToPreviousStep());
+        d3.select(skipSelector).on('click', () => this.skipCallback());
         this._unMount = () => {
             d3.select(nextSelector).on('click', null);
             d3.select(previousSelector).on('click', null);
@@ -167,7 +178,7 @@ export class Tutorial {
         d3.select('.intro-content')
             .transition()
             .duration(500)
-            .style(HTML_SVG_CONST.opacity, 0).on('end', () => {
+            .style(HTML_SVG_CONST.opacity, 0.1).on('end', () => {
                 d3.select('.intro-content').html(
                     this.stepsText[step]
                 ).transition()
@@ -213,11 +224,60 @@ let thirdStep = () => {
 };
 
 let fourthStep = () => {
-    // square with guard on two triangle
+    // refactor
+    let node: Element = document.getElementById('drawing-canvas');
+    let basePolygon = list.polygons[0];
+    let points = basePolygon.getPoints();
+    let scaledPoint = [];
+    let bbox = node.getBoundingClientRect();
+    let w = bbox.width;
+    let h = bbox.height;
+    let ratio = h / w;
+    let padding = 50;
+    let targetWidth = (w - padding * 2) / 2;
+    let targetHeight = (targetWidth * ratio) / 2;
+    // matrix transformation or changing the viewport
+    // would be a better way, especially if we want to manage resizing
+    let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()])
+        .range([w / 2 - targetWidth, w / 2 + targetWidth]);
+    let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()])
+        .range([h / 2 - targetHeight, h / 2 + targetHeight]);
+    for (let i = 0; i < points.length / 2; i++) {
+        scaledPoint.push(scaleX(points[i * 2]));
+        scaledPoint.push(scaleY(points[i * 2 + 1]));
+    }
+    let polygon = new GuardedPolygon(scaledPoint);
+    guardTool.polygon = polygon;
+    guardTool.mount(document.getElementById('drawing-canvas'), true);
+    d3.select('#drawing-canvas').append('circle')
+        .attr('cx', scaledPoint[0])
+        .attr('cy', scaledPoint[1])
+        .attr('r', 10)
+        .attr('fill', 'red')
+        .attr('stroke', 'black')
+
+    let center = findTriangleCenter([[scaledPoint[0], scaledPoint[1]]
+        ,[scaledPoint[2], scaledPoint[3]],
+        [scaledPoint[4], scaledPoint[5]]
+    ]);
+    let path =  d3.select('#drawing-canvas').append('path');
+    trianglePath([center[0], center[1]], scaledPoint[0], scaledPoint[1], 10, path);
+    center = findTriangleCenter([[scaledPoint[4], scaledPoint[5]]
+        ,[scaledPoint[6], scaledPoint[7]],
+        [scaledPoint[0], scaledPoint[1]]
+    ]);
+    path =  d3.select('#drawing-canvas').append('path');
+    trianglePath([center[0], center[1]], scaledPoint[0], scaledPoint[1], 10, path);
+    d3.select('#drawing-canvas').selectAll('polygon')
+        .transition()
+        .delay(300)
+        .duration(800)
+        .attr('fill', 'red')
 };
 
 let fifthStep = () => {
     // three-colored triangle
+    // clean everything, redraw
 };
 
 let sixthStep = () => {

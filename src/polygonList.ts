@@ -62,9 +62,13 @@ export class PolygonsListComponent {
     public hide() {
         d3.select(this.mountNode)
             .classed('hidden', true);
+        d3.select('.toolbar-header')
+            .classed('hidden', true);
     }
     public show() {
         d3.select(this.mountNode)
+            .classed('hidden', false);
+        d3.select('.toolbar-header')
             .classed('hidden', false);
     }
 }

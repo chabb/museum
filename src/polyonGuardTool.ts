@@ -17,21 +17,22 @@ export class PolygonGuardTool {
         this.polygon = polygon;
     }
 
-    public mount(baseNode: HTMLElement) {
+    public mount(baseNode: HTMLElement, bypassCircle = false) {
         let svg = d3.select(baseNode).append(HTML_SVG_CONST.svg)
             .attr(HTML_SVG_CONST.height, 1000)
             .attr(HTML_SVG_CONST.width, 2000);
         this.vizGroup = svg.append(HTML_SVG_CONST.g);
         this.triangleGroup = svg.append(HTML_SVG_CONST.g).attr(HTML_SVG_CONST.klass, 'triangles');
-        this.circleGroup = svg.append(HTML_SVG_CONST.g);
-
+        this.circleGroup = svg.append(HTML_SVG_CONST.g).attr(HTML_SVG_CONST.klass, 'polygon_circles');
         // we should have decoupled this part as it's outside the intended DOM node
 
         this.guardGroup = d3.select('.actions-tools .guards');
 
         this.svg = svg;
         this.drawPolygon();
-        this.drawCircles();
+        if (!bypassCircle) {
+            this.drawCircles();
+        }
         this.drawTriangles();
     }
 
@@ -158,7 +159,19 @@ export class PolygonGuardTool {
             .style('cursor', 'pointer')
             .on('click', function(d,i) {
                 self.circleClick(d, i, this)
+            })
+            .on('mouseenter', function(d){
+                console.log('-------sadsdsad');
+                d3.select(this).transition()
+                    .duration(100)
+                    .attr('r', 10);
+            })
+            .on('mouseout', function(d){
+                d3.select(this).transition()
+                    .duration(80)
+                    .attr('r', 4);
             });
+
 
         circles.merge(enterSelection)
             .attr(HTML_SVG_CONST.cx, d => d[0])

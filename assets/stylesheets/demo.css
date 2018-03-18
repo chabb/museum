@@ -2,6 +2,7 @@ body {
     display: flex;
     flex-direction: column;
     margin: 0;
+    font: bold 18px monospace;
 }
 
 
@@ -117,17 +118,19 @@ body {
     background-image: url('../images/guard.png');
     display: inline-block;
     transition: 0.2s filter linear, 0.2s -webkit-filter linear;
-    cursor: pointer;
 }
 
 .guard:hover {
     filter: grayscale(1.0);
 }
 
-.solve {
+.solve, .try_another, .skip, .previous, .next, .guard {
     cursor: pointer;
 }
 
-.try_another {
-    cursor: pointer;
+
+.intro-content {
+    padding: 10px;
+    text-align: justify;
+    font: bold 20px monospace;
 }

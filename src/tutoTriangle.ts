@@ -56,8 +56,8 @@ export function drawTriangle(triangles: number[][], baseSelection: any) {
 
         ratio = 0.8;
 // the arrow can get out of the triangle, so we just take a part of the triangle
-        let shortPoints = scaledPoint.map(scaledPoint => {
-            let centerIndex = scaledPoint % 2 === 0 ? 0 : 1
+        let shortPoints = scaledPoint.map((scaledPoint, idx) => {
+            let centerIndex = idx % 2 === 0 ? 0 : 1
             return dividePoint(center[centerIndex], scaledPoint, ratio);
         });
         let path = baseSelection.append('path');
@@ -75,8 +75,8 @@ export function drawTriangle(triangles: number[][], baseSelection: any) {
                 dividePoint(scaledPoint[i * 2 + 1], scaledPoint[nextPoint + 1], 0.5)
             );
         }
-        halfPoints = halfPoints.map(halfPoint => {
-            let centerIndex = halfPoint % 2 === 0 ? 0 : 1;
+        halfPoints = halfPoints.map((halfPoint, idx) => {
+            let centerIndex = idx % 2 === 0 ? 0 : 1;
             return dividePoint(center[centerIndex], halfPoint, ratio);
         });
         path = baseSelection.append('path');
