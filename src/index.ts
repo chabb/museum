@@ -13,7 +13,7 @@ import {GuardedPolygon} from './guardedPolygon';
 import {PolygonDrawingTool} from './polygonDrawingTool';
 import {PolygonGuardTool} from './polyonGuardTool';
 import {PolygonsListComponent} from './polygonList';
-import {findTriangleCenter, ready, HTML_SVG_CONST, dividePoint, trianglePath} from './util';
+import {ready, HTML_SVG_CONST} from './util';
 import {buggy, combShape, combShape3, combShape4, hell, shape2, shape3, square, triangle} from './polygons';
 import {drawTriangle} from './tutoTriangle';
 
@@ -76,7 +76,8 @@ function main() {
 
     tuto = new Tutorial();
     tuto.stepsText = tutorialSteps;
-    tuto.stepsCallback  = [ firstStep, () => {}];
+    tuto.stepsCallback  = [ firstStep, secondStep, thirdStep, fourthStep, fifthStep, sixthStep];
+    tuto.mount('.next', '.preview', '.skip');
     tuto.start();
 }
 
@@ -119,19 +120,46 @@ export class Tutorial {
     public stepsText: string[] = [];
     public stepsCallback: Function[] = [];
 
+    public currentStep = 0;
+    public _unMount: Function;
+
+
     constructor() {
 
     }
+
+    public mount(nextSelector, previousSelector, skipSelector) {
+        d3.select(nextSelector).on('click', () => this.goToNextStep());
+        d3.select(previousSelector).on('click', () => this.goToPreviousStep());
+        this._unMount = () => {
+            d3.select(nextSelector).on('click', null);
+            d3.select(previousSelector).on('click', null);
+            d3.select(skipSelector).on('click', null);
+            d3.select('#drawing-canvas').html('');
+            d3.select('.intro-content').html('');
+        }
+    }
+
+    public unmount() {
+        this._unMount();
+    }
+
     public start() {
-        this.executeStep(0);
+        this.currentStep = 0;
+        this.executeStep(this.currentStep);
     }
 
     public goToNextStep() {
-
+        this.currentStep++;
+        this.executeStep(this.currentStep);
     }
 
     public goToPreviousStep() {
-
+        if (this.currentStep === 0) {
+            return;
+        }
+        this.currentStep--;
+        this.executeStep(this.currentStep);
     }
 
     private executeStep(step: number) {
@@ -147,43 +175,54 @@ export class Tutorial {
                     .style(HTML_SVG_CONST.opacity, 1);
         });
 
-
+        // we introduced tight-coupling there
+        d3.select('#drawing-canvas').html('');
         this.stepsCallback[step]();
     }
 }
 
-
 // this part is quite ad-hoc and sketchy, I rushed it a little
 let firstStep = () => {
-    // ugly copy-pasting
+    // simple triangle
     let baseSelection = d3.select('#drawing-canvas');
-    //drawTriangle(triangle, baseSelection);
-    drawTriangle(square.slice(0, 6), baseSelection);
-    drawTriangle([square[0], square[1], square[6], square[7], square[4], square[5]], baseSelection);
+    let triangles = [
+        shape2.slice(0, 6),
+    ];
+    drawTriangle(triangles, baseSelection);
 };
 
-let secondStep = () => {``
+let secondStep = () => {
+    // square
     let baseSelection = d3.select('#drawing-canvas');
-
-    drawTriangle(square.slice(0, 3), baseSelection);
-    drawTriangle(square.slice(3, 5), baseSelection);
+    let triangles = [
+        shape2.slice(0, 6),
+        [square[0], square[1], square[6], square[7], square[4], square[5]]
+    ];
+    drawTriangle(triangles, baseSelection);
 };
 
 let thirdStep = () => {
-
+    // any polygon
+    let baseSelection = d3.select('#drawing-canvas');
+    let triangles = [
+        shape2.slice(0, 6),
+        [shape2[0], shape2[1], shape2[10], shape2[11], shape2[8], shape2[9]],
+        [shape2[4], shape2[5], shape2[6], shape2[7],shape2[8], shape2[9]]
+    ];
+    drawTriangle(triangles, baseSelection);
 };
 
 let fourthStep = () => {
-
+    // square with guard on two triangle
 };
 
 let fifthStep = () => {
-
+    // three-colored triangle
 };
 
 let sixthStep = () => {
 
-}
+};
 
 
 
@@ -194,7 +233,7 @@ let sixthStep = () => {
 let tutorialSteps = [
     'How many guards do we need for guarding a museum ? This looks like a complex problem, but we can try to approach' +
     'the solution with some simple intuitions. Let\'s look at a triangle. We can see that we only need one guard. The ' +
-    ' guard can see all the point',
+    ' guard can see all points in the triangle',
     'Let\'s try the same the thing with a square; if we look at this square, we see that we can split it into two triangles. ' +
     'So we can say that we need at most two guards, one for each triangle. ',
     'And if we look at any arbitrary polygon, it seems that we can break it into multiple triangles. And actually this is a proven fact.' +

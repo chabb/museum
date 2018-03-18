@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {HTML_SVG_CONST} from './util'; // webstorm complains
+import {HTML_SVG_CONST} from './util';
 
 export class PolygonDrawingTool {
 
@@ -46,7 +46,6 @@ export class PolygonDrawingTool {
             }
         });
 
-
         this.svgNode.on('mousemove.draw', function () {
             if (!self.drawing) return;
             let g = d3.select('g.drawPoly');
@@ -60,7 +59,6 @@ export class PolygonDrawingTool {
                 .attr(HTML_SVG_CONST.strokeWidth, 1);
         });
     }
-
 
 // doneDrawing
     private endDrawing() {

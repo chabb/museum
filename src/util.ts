@@ -31,6 +31,10 @@ export function trianglePath(xy, cx, cy, radius, path) {
     let x = xy[0] - cx;
     let y = xy[1] - cy;
     let dist = Math.sqrt(x * x + y * y);
+
+    // tan = opp / adj
+    // The angle that the line [(0,0);(x,y)] forms with the x-axis in a Cartesian coordinate system
+    // the trick is to make cx, cy the reference coordinate, and then rotate the flat arrow we draw
     let angle = Math.atan2(y, x) / Math.PI * 180;
     path.attr('d', 'M0,0 L' + [
         0, radius,
