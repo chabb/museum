@@ -2,7 +2,7 @@ body {
     display: flex;
     flex-direction: column;
     margin: 0;
-    font: bold 18px monospace;
+    font-family: "Helvetica Neue";
 }
 
 
@@ -12,6 +12,8 @@ body {
     border-bottom: 1px solid #d4d4d4;
     background: #fbfbfb;
     z-index: 400;
+    height: 50px;
+    display: flex;
 }
 
 .logo a {
@@ -27,9 +29,9 @@ body {
 }
 
 .content {
-    margin-top: 33px;
+    margin-top: 50px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     background-color: white;
     flex-grow: 1;
 }
@@ -39,8 +41,17 @@ body {
     flex-basis: 0;
     flex-shrink: 0;
 }
+.upper-content {
+    display: flex;
+    flex-direction: column;
+}
+.lower-content {
+    display: flex;
+    flex-direction: row;
+}
 
 .toolbar {
+    margin-left: 150px;
     flex-basis: 300px;
     flex-grow: 0;
     flex-shrink: 0;
@@ -52,7 +63,6 @@ body {
     flex-grow: 1;
     flex-shrink: 0;
     flex-basis: 200px;
-    padding: 15px;
 }
 
 .polygons-list {
@@ -68,11 +78,8 @@ body {
 }
 
 .tool-content {
-    padding: 15px;
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
-    border-radius: 5px;
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: 0;
@@ -83,18 +90,10 @@ body {
     align-items: center;
     overflow: auto;
 }
-.shapes-preview::-webkit-scrollbar {
-    background-color: white;
-}
-
-.shapes-preview::-webkit-scrollbar-thumb{
-    background-color:lightpink;
-}
-
 
 .shapes-preview > svg {
-    margin:15px;
-    overflow:visible;
+    margin: 15px;
+    overflow: visible;
     transition-property: transform;
     transition-duration: 0.1s;
     transition-timing-function: ease-out;
@@ -127,10 +126,65 @@ body {
 .solve, .try_another, .skip, .previous, .next, .guard {
     cursor: pointer;
 }
+.intro-navigation {
+    display:flex;
+    flex-direction: row;
+}
 
+.previous, .next, .skip {
+    flex:auto;
+    flex-shrink: 1
+    height: 35px;
+    border-radius: 3px;
+    border: 1px solid #029BE5;
+    background: #029BE5;
+    font-size: 15px;
+    margin: auto;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 35px;
+    color: white;
+}
+
+.next {
+    margin-left: 15px;
+}
+
+.skip {
+    color: black;
+    background: transparent;
+    border: none;
+}
 
 .intro-content {
-    padding: 10px;
     text-align: justify;
-    font: bold 20px monospace;
+    font-size: 15px;
+    line-height: 22px;
+}
+
+.container {
+    width:1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.header {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.main-title {
+    font-size: 40px;
+}
+
+.sub-title {
+    font-size: 22px;
+    font-weight: 800;
+    padding-bottom: 10px;
+}
+
+.nav-title {
+    font-weight: 800;
+    font-size: 18px;
+    margin-bottom: 14px;
 }

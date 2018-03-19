@@ -71,7 +71,8 @@ export class PolygonGuardTool {
                         .transition()
                         .delay(100)
                         .duration(800)
-                        .attr(HTML_SVG_CONST.fill, 'red');
+                        .attr(HTML_SVG_CONST.fill, '#FF0000')
+                        .attr(HTML_SVG_CONST.fillOpacity, 0.1);
                 });
             }
             return currentTransition;
@@ -187,7 +188,7 @@ export class PolygonGuardTool {
         this.vizGroup.append('polygon')
             .attr('points', points)
             .attr(HTML_SVG_CONST.stroke, 'black')
-            .style(HTML_SVG_CONST.fill, '#33FFFF');
+            .style(HTML_SVG_CONST.fill, 'none');
 
     }
 
@@ -232,7 +233,8 @@ export class PolygonGuardTool {
         selection.merge(selectionEnter)
             .attr('points', d => d)
             .attr(HTML_SVG_CONST.stroke, 'black')
-            .attr(HTML_SVG_CONST.fill, d => d.guarded ? 'red' : 'green');
+            .attr(HTML_SVG_CONST.fill, d => d.guarded ? 'red' : 'green')
+            .attr(HTML_SVG_CONST.fillOpacity, 0.1);
 
         selection.exit().remove();
     }

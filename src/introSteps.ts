@@ -28,10 +28,11 @@ export let tutorialSteps = [
     ' that share the a common edge with the triangle we just colorize',
     ' Now think about it where do we put our colors ? On every vertices, so we have n vertices to color. That means that' +
     ' the addition of the red vertex, the blue vertex, the green vertex should equal the number of vertix. ' +
-    ' Now our goal is to minimize the number of red vertex, so we can safely write r < g, r < b' +
-    ' With that it mind, suppose that r/3 would be greather that n. Then g and b would be greather than n/3. But then' +
-    ' r + g + b would be greater than n. So we can say that r is at most n/3, and so we have an upper bound of n/3 for' +
-    ' the number of guards',
-    ' Now you can try to colorize some museum to convince yourself'
+    ' Now our goal is to minimize the number of red vertex, so we can safely write r <=  g, r <= b.<br/>' +
+    ' With that it mind, suppose that r/3 would be greater that n. Then g and b would be greater than n/3. But then' +
+    ' r + g + b would be greater than n; which cannot happen. So we can say that r is at most n/3, and so we have an upper bound of n/3 for' +
+    ' the number of guards. <br/>' +
+    ' Now you can try to colorize some museum to convince yourself. Place a guard on a vertex, a guard will keep an eyes ' +
+        ' on all triangles that touches this particular vertex'
 ];
 

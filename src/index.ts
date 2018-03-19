@@ -79,7 +79,16 @@ function main() {
 
     tuto = new Tutorial();
     tuto.stepsText = tutorialSteps;
-    tuto.stepsCallback  = [ firstStep, secondStep, thirdStep, fourthStep, fifthStep, sixthStep, seventhStep];
+    tuto.stepsCallback  = [
+        firstStep,
+        secondStep,
+        thirdStep,
+        fourthStep,
+        fifthStep,
+        sixthStep,
+        seventhStep,
+        () => {}
+    ];
     tuto.skipCallback = () => {
         tuto._unMount();
         d3.select('.intro-navigation').classed('hidden', true);
@@ -189,6 +198,8 @@ export class Tutorial {
         // we introduced tight-coupling there
         d3.select('#drawing-canvas').html('');
         this.stepsCallback[step]();
+
+        d3.select('.nav-title').html(`Step ${this.currentStep + 1} of ${this.stepsText.length}`);
     }
 }
 
