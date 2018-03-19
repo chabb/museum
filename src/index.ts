@@ -18,6 +18,7 @@ import {PolygonsListComponent} from './polygonList';
 import {buggy, combShape, combShape3, combShape4, hell, shape2, shape3, square, triangle} from './polygons';
 import {drawTriangle} from './tutoTriangle';
 import {ready, HTML_SVG_CONST, findTriangleCenter, trianglePath} from './util';
+import {switchNavbarToMuseum} from './navbar';
 
 ready(main);
 
@@ -29,7 +30,9 @@ function main() {
     let node: Element = document.getElementById('drawing-canvas');
     tool = new  PolygonDrawingTool(node);
 
-    let polygons =  [new GuardedPolygon(square),
+    let polygons =  [
+        new GuardedPolygon(square),
+        new GuardedPolygon(square),
         new GuardedPolygon(triangle),
         new GuardedPolygon(shape2),
         new GuardedPolygon(shape3),
@@ -67,7 +70,9 @@ function main() {
             scaledPoint.push(scaleY(points[i * 2 + 1]));
         }
         let polygon = new GuardedPolygon(scaledPoint);
+        guardTool.unmount();
         switchToGuardMode(polygon);
+        guardTool.updateGuardSection();
     };
 
     tool.onDrawingDoneCallback = (points) => {
@@ -93,6 +98,7 @@ function main() {
         tuto._unMount();
         d3.select('.intro-navigation').classed('hidden', true);
         switchToMuseumMode();
+        switchNavbarToMuseum();
     };
     tuto.mount('.next', '.previous', '.skip');
 
@@ -103,12 +109,10 @@ function main() {
 
 
 function switchToGuardMode(polygon) {
-    list.hide(); // bad naming => unmount
+    //list.hide(); // bad naming => unmount
     tool.hide();
     d3.select('.actions-tools').classed('hidden', false);
     d3.select('.toolbar-header').html('Put guard or ask the architect to help you');
-
-
     guardTool.polygon = polygon;
     // make a class
     d3.select('.solve').on('click', function() {
@@ -121,6 +125,8 @@ function switchToGuardMode(polygon) {
        switchToMuseumMode();
     });
 
+    let guardsNumber = Math.floor(guardTool.polygon.getPoints().length /  ( 2 * 3));
+    d3.select('.intro-content').html(`Try to use at most ${guardsNumber} guards`);
     guardTool.mount(document.getElementById('drawing-canvas'));
 }
 
@@ -132,7 +138,8 @@ function switchToMuseumMode() {
     d3.select('.try-another').on('click', null);
     guardTool.unmount();
     d3.select('.actions-tools').classed('hidden', true);
-    d3.select('.toolbar-header').html('SELECT A GORGONZOLA');
+    d3.select('.toolbar-header').html('Pick a museum');
+    d3.select('.intro-content').html('');
 }
 
 export class Tutorial {

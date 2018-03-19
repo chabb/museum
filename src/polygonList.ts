@@ -35,6 +35,7 @@ export class PolygonsListComponent {
             .data(this.polygons)
             .enter()
             .append(HTML_SVG_CONST.svg)
+            .classed('polygon-draw', (d,i) => { return i === 0; })
             .attr(HTML_SVG_CONST.width, this.itemWidth)
             .attr(HTML_SVG_CONST.height, this.itemHeight)
             .append("polygon")
@@ -51,8 +52,8 @@ export class PolygonsListComponent {
                 }
                 return points;
             })
-            .attr(HTML_SVG_CONST.stroke, this.strokeColor)
-            .attr(HTML_SVG_CONST.fill, this.fillColor)
+            //.attr(HTML_SVG_CONST.stroke, this.strokeColor)
+            //.attr(HTML_SVG_CONST.fill, this.fillColor)
             .classed('polygon-overview', true)
             .on('click', (d:GuardedPolygon, i: number) => {
                 this.selectedPolygon = d;

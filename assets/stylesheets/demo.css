@@ -2,9 +2,39 @@ body {
     display: flex;
     flex-direction: column;
     margin: 0;
-    font-family: "Helvetica Neue";
+    font-family: 'Helvetica Neue';
 }
 
+.polygon-draw {
+    background-image: url('../images/pencil.png');
+    background-position: center;
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.main-navbar {
+    border-bottom: 1px solid black;
+    margin-bottom: 15px;
+}
+
+.main-navbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.main-navbar li {
+    padding-bottom: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: inline-block;
+    font-size: 1em;
+    line-height: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.main-navbar li.selected {
+    border-bottom: 2px solid #029BE5;
+}
 
 .nav {
     position: fixed;
@@ -50,6 +80,11 @@ body {
     flex-direction: row;
 }
 
+.actions-tools {
+    display: flex;
+    flex-direction: column;
+}
+
 .toolbar {
     margin-left: 150px;
     flex-basis: 300px;
@@ -91,6 +126,17 @@ body {
     overflow: auto;
 }
 
+.polygon-overview {
+    fill: transparent;
+    stroke: #AAAAAA;
+    stroke-linejoin: round;
+}
+
+.polygon-overview.selected {
+    fill: white;
+    stroke: #029BEA;
+}
+
 .shapes-preview > svg {
     margin: 15px;
     overflow: visible;
@@ -106,7 +152,11 @@ body {
 
 }
 .hidden {
-    display: none;
+    display: none !important;
+}
+
+.guards {
+    margin: 15px;
 }
 
 .guard {
@@ -123,6 +173,10 @@ body {
     filter: grayscale(1.0);
 }
 
+.guard.passive {
+    filter: grayscale(1.0);
+}
+
 .solve, .try_another, .skip, .previous, .next, .guard {
     cursor: pointer;
 }
@@ -131,9 +185,9 @@ body {
     flex-direction: row;
 }
 
-.previous, .next, .skip {
+.previous, .next, .skip, .solve {
     flex:auto;
-    flex-shrink: 1
+    flex-shrink: 1;
     height: 35px;
     border-radius: 3px;
     border: 1px solid #029BE5;
@@ -145,6 +199,16 @@ body {
     line-height: 35px;
     color: white;
 }
+
+/**
+ * Interim solution
+ */
+.solve {
+    padding-left:10px;
+    padding-right:10px;
+    margin: 0 auto 0 15px;
+}
+
 
 .next {
     margin-left: 15px;

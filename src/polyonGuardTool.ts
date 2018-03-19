@@ -37,7 +37,7 @@ export class PolygonGuardTool {
     }
 
     public unmount() {
-        this.svg.remove();
+        this.svg && this.svg.remove();
         this.svg = null;
     }
 
@@ -106,6 +106,37 @@ export class PolygonGuardTool {
         }
     }
 
+    public updateGuardSection() {
+        let guards = [];
+        for (let i = 0; i < this.polygon.getNumberOfPoints() / 2; i++) {
+            if (this.polygon.isVertixGuarded(i)) {
+                guards[i] = 1;
+            } else {
+                guards[i] = 0;
+            }
+        }
+        let guardSelection = this.guardGroup
+            .selectAll('.guard')
+            .data(guards);
+        let enterSelection = guardSelection.enter()
+            .append('div')
+            .classed('guard', true)
+            .on('click', (d, i) => {
+                if (d === 0) {
+                    return;
+                }
+                let node = this.circleGroup.select(`circle#circle-${i}`);
+                this.circleClick(null, d, node._groups[0][0])
+            });
+        guardSelection
+            .merge(enterSelection)
+            .classed('active', (d) => { return d === 1;})
+            .classed('passive', (d) => { return d === 0;});
+
+        guardSelection.exit()
+            .remove();
+    }
+
     private updeGuardOnNode(node, vertexIndex) {
         // not very efficient, we can have addGuard return a boolean and pass it
         console.log('UPDATE GUARD', vertexIndex);
@@ -114,26 +145,10 @@ export class PolygonGuardTool {
             .transition()
             .duration(200)
             .attr('r', 20)
-            .transition()
+            .transition('fillguard')
             .attr('fill', guarded ? 'red' : 'blue')
             .duration(100)
             .attr('r', 5);
-    }
-
-    private updateGuardSection() {
-        let guards = Array.from(this.polygon.guardPosition);
-        let guardSelection = this.guardGroup
-            .selectAll('.guard')
-            .data(guards);
-        guardSelection.enter()
-            .append('div')
-            .classed('guard', true)
-            .on('click', (d, i) => {
-                let node = this.circleGroup.select(`circle#circle-${d}`);
-                this.circleClick(null, d, node._groups[0][0])
-            });
-        guardSelection.exit()
-            .remove();
     }
 
     private drawCircles() {
@@ -168,7 +183,7 @@ export class PolygonGuardTool {
                     .attr('r', 10);
             })
             .on('mouseout', function(d){
-                d3.select(this).transition()
+                d3.select(this).transition('overmouseout')
                     .duration(80)
                     .attr('r', 4);
             });

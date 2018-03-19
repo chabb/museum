@@ -7,7 +7,7 @@ export class Polygon {
 
     public constructor(points: number[]){
         this.points = points;
-        this.numberOfPoints = points.length;
+        this.numberOfPoints = points.length
 
         for (let i = 0;i < points.length / 2; i++){
             if(points[i * 2]  > this.maxX ) {
