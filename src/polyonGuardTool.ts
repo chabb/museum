@@ -18,9 +18,11 @@ export class PolygonGuardTool {
     }
 
     public mount(baseNode: HTMLElement, bypassCircle = false) {
+
+        //TODO(chab) we should reuse svg node from HTML
         let svg = d3.select(baseNode).append(HTML_SVG_CONST.svg)
-            .attr(HTML_SVG_CONST.height, 1000)
-            .attr(HTML_SVG_CONST.width, 2000);
+            .attr(HTML_SVG_CONST.height, 500)
+            .attr(HTML_SVG_CONST.width, 800);
         this.vizGroup = svg.append(HTML_SVG_CONST.g);
         this.triangleGroup = svg.append(HTML_SVG_CONST.g).attr(HTML_SVG_CONST.klass, 'triangles');
         this.circleGroup = svg.append(HTML_SVG_CONST.g).attr(HTML_SVG_CONST.klass, 'polygon_circles');

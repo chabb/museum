@@ -50,25 +50,10 @@ function main() {
     list.render();
     list.onSelectedItemCallback = (itemNumber: number) => {
         let basePolygon = polygons[itemNumber];
-        let points = basePolygon.getPoints();
-        let scaledPoint = [];
-        let bbox = node.getBoundingClientRect();
-        let w = bbox.width;
-        let h = bbox.height;
-        let ratio = h / w;
-        let padding = 50;
-        let targetWidth = (w - padding * 2) / 2;
-        let targetHeight = (targetWidth * ratio) / 2;
-        // matrix transformation or changing the viewport
-        // would be a better way, especially if we want to manage resizing
-        let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()])
-            .range([w / 2 - targetWidth, w / 2 + targetWidth]);
-        let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()])
-            .range([h / 2 - targetHeight, h / 2 + targetHeight]);
-        for (let i = 0; i < points.length / 2; i++) {
-            scaledPoint.push(scaleX(points[i * 2]));
-            scaledPoint.push(scaleY(points[i * 2 + 1]));
-        }
+        let scaledPoint = getScaledPointsFromBounding(basePolygon,
+            node.getBoundingClientRect(),
+            25,
+            25);
         let polygon = new GuardedPolygon(scaledPoint);
         guardTool.unmount();
         switchToGuardMode(polygon);
@@ -245,25 +230,10 @@ let fourthStep = () => {
     // refactor
     let node: Element = document.getElementById('drawing-canvas');
     let basePolygon = list.polygons[0];
-    let points = basePolygon.getPoints();
-    let scaledPoint = [];
-    let bbox = node.getBoundingClientRect();
-    let w = bbox.width;
-    let h = bbox.height;
-    let ratio = h / w;
-    let padding = 50;
-    let targetWidth = (w - padding * 2) / 2;
-    let targetHeight = (targetWidth * ratio) / 2;
-    // matrix transformation or changing the viewport
-    // would be a better way, especially if we want to manage resizing
-    let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()])
-        .range([w / 2 - targetWidth, w / 2 + targetWidth]);
-    let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()])
-        .range([h / 2 - targetHeight, h / 2 + targetHeight]);
-    for (let i = 0; i < points.length / 2; i++) {
-        scaledPoint.push(scaleX(points[i * 2]));
-        scaledPoint.push(scaleY(points[i * 2 + 1]));
-    }
+    let scaledPoint = getScaledPointsFromBounding(basePolygon,
+        node.getBoundingClientRect(),
+        25,
+        25);
     let polygon = new GuardedPolygon(scaledPoint);
     guardTool.polygon = polygon;
     guardTool.mount(document.getElementById('drawing-canvas'), true);
@@ -297,25 +267,10 @@ let fifthStep = () => {
     guardTool.unmount();
     let node: Element = document.getElementById('drawing-canvas');
     let basePolygon = list.polygons[1];
-    let points = basePolygon.getPoints();
-    let scaledPoint = [];
-    let bbox = node.getBoundingClientRect();
-    let w = bbox.width;
-    let h = bbox.height;
-    let ratio = h / w;
-    let padding = 50;
-    let targetWidth = (w - padding * 2) / 2;
-    let targetHeight = (targetWidth * ratio) / 2;
-    // matrix transformation or changing the viewport
-    // would be a better way, especially if we want to manage resizing
-    let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()])
-        .range([w / 2 - targetWidth, w / 2 + targetWidth]);
-    let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()])
-        .range([h / 2 - targetHeight, h / 2 + targetHeight]);
-    for (let i = 0; i < points.length / 2; i++) {
-        scaledPoint.push(scaleX(points[i * 2]));
-        scaledPoint.push(scaleY(points[i * 2 + 1]));
-    }
+    let scaledPoint = getScaledPointsFromBounding(basePolygon,
+        node.getBoundingClientRect(),
+        25,
+        25);
     let polygon = new GuardedPolygon(scaledPoint);
     guardTool.polygon = polygon;
     guardTool.mount(document.getElementById('drawing-canvas'), true);
@@ -344,25 +299,10 @@ let sixthStep = () => {
     setTimeout(() => {
         let node: Element = document.getElementById('drawing-canvas');
         let basePolygon = list.polygons[0];
-        let points = basePolygon.getPoints();
-        let scaledPoint = [];
-        let bbox = node.getBoundingClientRect();
-        let w = bbox.width;
-        let h = bbox.height;
-        let ratio = h / w;
-        let padding = 50;
-        let targetWidth = (w - padding * 2) / 2;
-        let targetHeight = (targetWidth * ratio) / 2;
-        // matrix transformation or changing the viewport
-        // would be a better way, especially if we want to manage resizing
-        let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()])
-            .range([w / 2 - targetWidth, w / 2 + targetWidth]);
-        let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()])
-            .range([h / 2 - targetHeight, h / 2 + targetHeight]);
-        for (let i = 0; i < points.length / 2; i++) {
-            scaledPoint.push(scaleX(points[i * 2]));
-            scaledPoint.push(scaleY(points[i * 2 + 1]));
-        }
+        let scaledPoint = getScaledPointsFromBounding(basePolygon,
+            node.getBoundingClientRect(),
+            25,
+            25);
         let polygon = new GuardedPolygon(scaledPoint);
         guardTool.polygon = polygon;
         guardTool.mount(document.getElementById('drawing-canvas'), false);
@@ -375,25 +315,10 @@ let seventhStep = () => {
     setTimeout(() => {
         let node: Element = document.getElementById('drawing-canvas');
         let basePolygon = list.polygons[2];
-        let points = basePolygon.getPoints();
-        let scaledPoint = [];
-        let bbox = node.getBoundingClientRect();
-        let w = bbox.width;
-        let h = bbox.height;
-        let ratio = h / w;
-        let padding = 50;
-        let targetWidth = (w - padding * 2) / 2;
-        let targetHeight = (targetWidth * ratio) / 2;
-        // matrix transformation or changing the viewport
-        // would be a better way, especially if we want to manage resizing
-        let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()])
-            .range([w / 2 - targetWidth, w / 2 + targetWidth]);
-        let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()])
-            .range([h / 2 - targetHeight, h / 2 + targetHeight]);
-        for (let i = 0; i < points.length / 2; i++) {
-            scaledPoint.push(scaleX(points[i * 2]));
-            scaledPoint.push(scaleY(points[i * 2 + 1]));
-        }
+        let scaledPoint = getScaledPointsFromBounding(basePolygon,
+            node.getBoundingClientRect(),
+            25,
+            25);
         let polygon = new GuardedPolygon(scaledPoint);
         guardTool.polygon = polygon;
         guardTool.mount(document.getElementById('drawing-canvas'), false);
@@ -402,3 +327,22 @@ let seventhStep = () => {
     }, 400);
 };
 
+function getScaledPointsFromBounding(polygon, bbox, verticalPadding, horizontalPadding) {
+    let scaledPoint = [];
+    let points =polygon.getPoints();
+    let w = bbox.width;
+    let h = bbox.height;
+    let targetWidth = (w - horizontalPadding * 2) / 2;
+    let targetHeight = (h - verticalPadding * 2) / 2;
+    // matrix transformation or changing the viewport
+    // would be a better way, especially if we want to manage resizing
+    let scaleX = d3.scaleLinear().domain([0, polygon.getMaxX()])
+        .range([w / 2 - targetWidth, w / 2 + targetWidth]);
+    let scaleY = d3.scaleLinear().domain([0, polygon.getMaxY()])
+        .range([h / 2 - targetHeight, h / 2 + targetHeight]);
+    for (let i = 0; i < points.length / 2; i++) {
+        scaledPoint.push(scaleX(points[i * 2]));
+        scaledPoint.push(scaleY(points[i * 2 + 1]));
+    }
+    return scaledPoint;
+}

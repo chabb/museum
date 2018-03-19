@@ -133,7 +133,6 @@ body {
 }
 
 .polygon-overview.selected {
-    fill: white;
     stroke: #029BEA;
 }
 

@@ -11,6 +11,7 @@ export class PolygonsListComponent {
 
     public onSelectedItemCallback: Function;
 
+    private selectedItemIndex: number;
     private selectedPolygon: GuardedPolygon;
     private itemWidth: number = 100;
     private itemHeight: number = 60;
@@ -30,6 +31,7 @@ export class PolygonsListComponent {
         let scaleX = d3.scaleLinear().range([0, this.itemWidth]);
         let scaleY = d3.scaleLinear().range([0, this.itemHeight]);
         console.log('SHHEEE', this.mountNode);
+        let self = this;
         let svg = d3.select(this.mountNode)
             .selectAll(HTML_SVG_CONST.svg)
             .data(this.polygons)
@@ -55,9 +57,17 @@ export class PolygonsListComponent {
             //.attr(HTML_SVG_CONST.stroke, this.strokeColor)
             //.attr(HTML_SVG_CONST.fill, this.fillColor)
             .classed('polygon-overview', true)
-            .on('click', (d:GuardedPolygon, i: number) => {
-                this.selectedPolygon = d;
-                this.onSelectedItemCallback(i);
+            .classed('selected', (d,i) => {
+                return i === this.selectedItemIndex;
+            })
+            .on('click', function(d:GuardedPolygon, i: number) {
+                self.selectedPolygon = d;
+                self.selectedItemIndex = i;
+                self.onSelectedItemCallback(i);
+                // it's rushed
+                d3.selectAll('.polygon-overview').classed('selected', false);
+                console.log('boo', this);
+                d3.select(this).classed('selected', true)
             });
     }
     public hide() {
