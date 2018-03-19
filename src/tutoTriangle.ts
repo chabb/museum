@@ -52,7 +52,8 @@ export function drawTriangle(triangles: number[][], baseSelection: any) {
             .append(HTML_SVG_CONST.polygon)
             .attr('points', d => d)
             .attr(HTML_SVG_CONST.stroke, 'black')
-            .style(HTML_SVG_CONST.fill, '#33FFFF');
+            .style(HTML_SVG_CONST.fill, 'rgb(255, 0, 0')
+            .style(HTML_SVG_CONST.fillOpacity, '0.1');
 
         ratio = 0.8;
 // the arrow can get out of the triangle, so we just take a part of the triangle

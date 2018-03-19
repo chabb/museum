@@ -30,7 +30,7 @@ body {
     margin-top: 33px;
     display: flex;
     flex-direction: row;
-    background-color: antiquewhite;
+    background-color: white;
     flex-grow: 1;
 }
 
@@ -84,7 +84,7 @@ body {
     overflow: auto;
 }
 .shapes-preview::-webkit-scrollbar {
-    background-color: antiquewhite;
+    background-color: white;
 }
 
 .shapes-preview::-webkit-scrollbar-thumb{

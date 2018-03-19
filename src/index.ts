@@ -79,11 +79,11 @@ function main() {
 
     tuto = new Tutorial();
     tuto.stepsText = tutorialSteps;
-    tuto.stepsCallback  = [ firstStep, secondStep, thirdStep, fourthStep, fifthStep, sixthStep];
+    tuto.stepsCallback  = [ firstStep, secondStep, thirdStep, fourthStep, fifthStep, sixthStep, seventhStep];
     tuto.skipCallback = () => {
         tuto._unMount();
-        list.show();
         d3.select('.intro-navigation').classed('hidden', true);
+        switchToMuseumMode();
     };
     tuto.mount('.next', '.previous', '.skip');
 
@@ -276,11 +276,111 @@ let fourthStep = () => {
 };
 
 let fifthStep = () => {
-    // three-colored triangle
-    // clean everything, redraw
+    guardTool.unmount();
+    let node: Element = document.getElementById('drawing-canvas');
+    let basePolygon = list.polygons[1];
+    let points = basePolygon.getPoints();
+    let scaledPoint = [];
+    let bbox = node.getBoundingClientRect();
+    let w = bbox.width;
+    let h = bbox.height;
+    let ratio = h / w;
+    let padding = 50;
+    let targetWidth = (w - padding * 2) / 2;
+    let targetHeight = (targetWidth * ratio) / 2;
+    // matrix transformation or changing the viewport
+    // would be a better way, especially if we want to manage resizing
+    let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()])
+        .range([w / 2 - targetWidth, w / 2 + targetWidth]);
+    let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()])
+        .range([h / 2 - targetHeight, h / 2 + targetHeight]);
+    for (let i = 0; i < points.length / 2; i++) {
+        scaledPoint.push(scaleX(points[i * 2]));
+        scaledPoint.push(scaleY(points[i * 2 + 1]));
+    }
+    let polygon = new GuardedPolygon(scaledPoint);
+    guardTool.polygon = polygon;
+    guardTool.mount(document.getElementById('drawing-canvas'), true);
+    let svg = d3.select('#drawing-canvas')
+    svg.append('circle')
+        .attr('cx', scaledPoint[0])
+        .attr('cy', scaledPoint[1])
+        .attr('r', 10)
+        .attr('fill', 'red')
+        .attr('stroke', 'black');
+    svg.append('circle')
+        .attr('cx', scaledPoint[2])
+        .attr('cy', scaledPoint[3])
+        .attr('r', 10)
+        .attr('fill', 'green')
+        .attr('stroke', 'black');
+    svg.append('circle')
+        .attr('cx', scaledPoint[4])
+        .attr('cy', scaledPoint[5])
+        .attr('r', 10)
+        .attr('fill', 'blue')
+        .attr('stroke', 'black')
 };
 
 let sixthStep = () => {
+    setTimeout(() => {
+        let node: Element = document.getElementById('drawing-canvas');
+        let basePolygon = list.polygons[0];
+        let points = basePolygon.getPoints();
+        let scaledPoint = [];
+        let bbox = node.getBoundingClientRect();
+        let w = bbox.width;
+        let h = bbox.height;
+        let ratio = h / w;
+        let padding = 50;
+        let targetWidth = (w - padding * 2) / 2;
+        let targetHeight = (targetWidth * ratio) / 2;
+        // matrix transformation or changing the viewport
+        // would be a better way, especially if we want to manage resizing
+        let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()])
+            .range([w / 2 - targetWidth, w / 2 + targetWidth]);
+        let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()])
+            .range([h / 2 - targetHeight, h / 2 + targetHeight]);
+        for (let i = 0; i < points.length / 2; i++) {
+            scaledPoint.push(scaleX(points[i * 2]));
+            scaledPoint.push(scaleY(points[i * 2 + 1]));
+        }
+        let polygon = new GuardedPolygon(scaledPoint);
+        guardTool.polygon = polygon;
+        guardTool.mount(document.getElementById('drawing-canvas'), false);
+        let steps = polygon.solve();
+        guardTool.solve(steps);
+    }, 400);
+};
 
+let seventhStep = () => {
+    setTimeout(() => {
+        let node: Element = document.getElementById('drawing-canvas');
+        let basePolygon = list.polygons[2];
+        let points = basePolygon.getPoints();
+        let scaledPoint = [];
+        let bbox = node.getBoundingClientRect();
+        let w = bbox.width;
+        let h = bbox.height;
+        let ratio = h / w;
+        let padding = 50;
+        let targetWidth = (w - padding * 2) / 2;
+        let targetHeight = (targetWidth * ratio) / 2;
+        // matrix transformation or changing the viewport
+        // would be a better way, especially if we want to manage resizing
+        let scaleX = d3.scaleLinear().domain([0, basePolygon.getMaxX()])
+            .range([w / 2 - targetWidth, w / 2 + targetWidth]);
+        let scaleY = d3.scaleLinear().domain([0,basePolygon.getMaxY()])
+            .range([h / 2 - targetHeight, h / 2 + targetHeight]);
+        for (let i = 0; i < points.length / 2; i++) {
+            scaledPoint.push(scaleX(points[i * 2]));
+            scaledPoint.push(scaleY(points[i * 2 + 1]));
+        }
+        let polygon = new GuardedPolygon(scaledPoint);
+        guardTool.polygon = polygon;
+        guardTool.mount(document.getElementById('drawing-canvas'), false);
+        let steps = polygon.solve();
+        guardTool.solve(steps);
+    }, 400);
 };
 

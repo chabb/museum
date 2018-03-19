@@ -46,12 +46,13 @@ export function trianglePath(xy, cx, cy, radius, path) {
         0, -radius
     ] + 'z')
         .attr('transform', 'translate(' + [cx, cy] + ') rotate(' + angle + ')')
-        .attr('fill', 'none')
+        .attr('fill', 'white')
         .attr('stroke', 'black')
 }
 
 export let HTML_SVG_CONST = {
     svg: 'svg',
+    fillOpacity: 'fill-opacity',
     opacity: 'opacity',
     polygon: 'polygon',
     width: 'width',
