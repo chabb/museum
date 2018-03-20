@@ -109,7 +109,9 @@ function switchToGuardMode(polygon) {
     guardTool.polygon = polygon;
     // make a class
     d3.select('.solve').on('click', function() {
-        // move to
+        // reset state
+        polygon.resetGuards();
+        guardTool.updateGuardSection();
         let steps = polygon.solve();
         guardTool.solve(steps);
         guardTool.checkSolved();
@@ -199,7 +201,7 @@ let fourthStep = () => {
         .transition()
         .delay(300)
         .duration(800)
-        .attr(HTML_SVG_CONST, 'red')
+        .attr(HTML_SVG_CONST.fill, 'red')
 };
 
 let fifthStep = () => {

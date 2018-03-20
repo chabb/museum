@@ -60,6 +60,12 @@ export class GuardedPolygon extends TriangulatedPolygon {
         return flattenedSteps;
     }
 
+    public resetGuards() {
+        this.guardPosition.clear();
+        this.verticesColor = new Array(this.points.length / 2);
+        this.updateGuardedTriangle();
+    }
+
     private updateGuardedTriangle() {
         this.guardedTriangle = 0;
         this.setOfTriangles.forEach(t => t.guarded = false);
