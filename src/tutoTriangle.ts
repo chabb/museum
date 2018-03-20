@@ -29,13 +29,14 @@ export function drawTriangle(triangles: number[][], baseSelection: any) {
             [triangle[4], triangle[5]]];
         let center = findTriangleCenter(points);
         let scaledPoint = [];
+        // should be refactored so we can reuse util method
         let bbox = node.getBoundingClientRect();
         let w = bbox.width;
         let h = bbox.height;
         let ratio = h / w;
-        let padding = 50;
+        let padding = 25;
         let targetWidth = (w - (padding * 2)) / 2;
-        let targetHeight = (targetWidth * ratio) / 2;
+        let targetHeight =  (h - (padding * 2)) / 2;
 // matrix transformation or changing the viewport
 // would be a better way, especially if we want to manage resizing
         let scaleX = d3.scaleLinear().domain([0, maxX]).range([w / 2 - targetWidth, w / 2 + targetWidth]);

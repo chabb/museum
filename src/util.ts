@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+
 /**
  *  Utility methods
  *
@@ -71,4 +73,24 @@ export let HTML_SVG_CONST = {
     stroke: 'stroke',
     strokeWidth: 'stroke-width',
     klass: 'class'
+};
+
+export function getScaledPointsFromBounding(polygon, bbox, verticalPadding, horizontalPadding) {
+    let scaledPoint = [];
+    let points = polygon.getPoints();
+    let w = bbox.width;
+    let h = bbox.height;
+    let targetWidth = (w - horizontalPadding * 2) / 2;
+    let targetHeight = (h - verticalPadding * 2) / 2;
+    // matrix transformation or changing the viewport
+    // would be a better way, especially if we want to manage resizing
+    let scaleX = d3.scaleLinear().domain([0, polygon.getMaxX()])
+        .range([w / 2 - targetWidth, w / 2 + targetWidth]);
+    let scaleY = d3.scaleLinear().domain([0, polygon.getMaxY()])
+        .range([h / 2 - targetHeight, h / 2 + targetHeight]);
+    for (let i = 0; i < points.length / 2; i++) {
+        scaledPoint.push(scaleX(points[i * 2]));
+        scaledPoint.push(scaleY(points[i * 2 + 1]));
+    }
+    return scaledPoint;
 }

@@ -7,18 +7,20 @@
  */
 
 // lib imports
-import * as d3 from 'd3'; // webstorm complains
+import * as d3 from 'd3';
 // src imports
-
 import {GuardedPolygon} from './guardedPolygon';
 import {tutorialSteps} from './introSteps';
+import {switchNavbarToMuseum} from './navbar';
 import {PolygonDrawingTool} from './polygonDrawingTool';
 import {PolygonGuardTool} from './polyonGuardTool';
 import {PolygonsListComponent} from './polygonList';
 import {buggy, combShape, combShape3, combShape4, hell, shape2, shape3, square, triangle} from './polygons';
+import {Tutorial} from './tutorial';
 import {drawTriangle} from './tutoTriangle';
-import {ready, HTML_SVG_CONST, findTriangleCenter, trianglePath} from './util';
-import {switchNavbarToMuseum} from './navbar';
+import {ready, HTML_SVG_CONST, findTriangleCenter, trianglePath, getScaledPointsFromBounding} from './util';
+
+
 
 ready(main);
 
@@ -49,15 +51,21 @@ function main() {
     list.polygons = polygons;
     list.render();
     list.onSelectedItemCallback = (itemNumber: number) => {
-        let basePolygon = polygons[itemNumber];
-        let scaledPoint = getScaledPointsFromBounding(basePolygon,
-            node.getBoundingClientRect(),
-            25,
-            25);
-        let polygon = new GuardedPolygon(scaledPoint);
-        guardTool.unmount();
-        switchToGuardMode(polygon);
-        guardTool.updateGuardSection();
+
+        if (itemNumber === 0) {
+          tool.mount();
+        } else {
+            let basePolygon = polygons[itemNumber];
+            let scaledPoint = getScaledPointsFromBounding(basePolygon,
+                node.getBoundingClientRect(),
+                25,
+                25);
+            let polygon = new GuardedPolygon(scaledPoint);
+            guardTool.unmount();
+            switchToGuardMode(polygon);
+            guardTool.updateGuardSection();
+        }
+
     };
 
     tool.onDrawingDoneCallback = (points) => {
@@ -118,81 +126,12 @@ function switchToGuardMode(polygon) {
 function switchToMuseumMode() {
     // unmount event
     list.show();
-    tool.mount();
     d3.select('.solve').on('click', null);
     d3.select('.try-another').on('click', null);
     guardTool.unmount();
     d3.select('.actions-tools').classed('hidden', true);
     d3.select('.toolbar-header').html('Pick a museum');
     d3.select('.intro-content').html('');
-}
-
-export class Tutorial {
-    public stepsText: string[] = [];
-    public stepsCallback: Function[] = [];
-
-    public currentStep = 0;
-    public _unMount: Function;
-    public skipCallback: Function;
-
-    constructor() {
-
-    }
-
-    public mount(nextSelector, previousSelector, skipSelector) {
-        d3.select(nextSelector).on('click', () => this.goToNextStep());
-        d3.select(previousSelector).on('click', () => this.goToPreviousStep());
-        d3.select(skipSelector).on('click', () => this.skipCallback());
-        this._unMount = () => {
-            d3.select(nextSelector).on('click', null);
-            d3.select(previousSelector).on('click', null);
-            d3.select(skipSelector).on('click', null);
-            d3.select('#drawing-canvas').html('');
-            d3.select('.intro-content').html('');
-        }
-    }
-
-    public unmount() {
-        this._unMount();
-    }
-
-    public start() {
-        this.currentStep = 0;
-        this.executeStep(this.currentStep);
-    }
-
-    public goToNextStep() {
-        this.currentStep++;
-        this.executeStep(this.currentStep);
-    }
-
-    public goToPreviousStep() {
-        if (this.currentStep === 0) {
-            return;
-        }
-        this.currentStep--;
-        this.executeStep(this.currentStep);
-    }
-
-    private executeStep(step: number) {
-        // do something nicer
-        d3.select('.intro-content')
-            .transition()
-            .duration(500)
-            .style(HTML_SVG_CONST.opacity, 0.1).on('end', () => {
-                d3.select('.intro-content').html(
-                    this.stepsText[step]
-                ).transition()
-                    .duration(500)
-                    .style(HTML_SVG_CONST.opacity, 1);
-        });
-
-        // we introduced tight-coupling there
-        d3.select('#drawing-canvas').html('');
-        this.stepsCallback[step]();
-
-        d3.select('.nav-title').html(`Step ${this.currentStep + 1} of ${this.stepsText.length}`);
-    }
 }
 
 // this part is quite ad-hoc and sketchy, I rushed it a little
@@ -229,20 +168,20 @@ let thirdStep = () => {
 let fourthStep = () => {
     // refactor
     let node: Element = document.getElementById('drawing-canvas');
-    let basePolygon = list.polygons[0];
+    let basePolygon = list.polygons[1];
     let scaledPoint = getScaledPointsFromBounding(basePolygon,
         node.getBoundingClientRect(),
-        25,
-        25);
+        10,
+        10);
     let polygon = new GuardedPolygon(scaledPoint);
     guardTool.polygon = polygon;
     guardTool.mount(document.getElementById('drawing-canvas'), true);
     d3.select('#drawing-canvas').append('circle')
-        .attr('cx', scaledPoint[0])
-        .attr('cy', scaledPoint[1])
-        .attr('r', 10)
-        .attr('fill', 'red')
-        .attr('stroke', 'black')
+        .attr(HTML_SVG_CONST.cx, scaledPoint[0])
+        .attr(HTML_SVG_CONST.cy, scaledPoint[1])
+        .attr(HTML_SVG_CONST.r, 10)
+        .attr(HTML_SVG_CONST.fill, 'red')
+        .attr(HTML_SVG_CONST.stroke, 'black');
 
     let center = findTriangleCenter([[scaledPoint[0], scaledPoint[1]]
         ,[scaledPoint[2], scaledPoint[3]],
@@ -260,13 +199,13 @@ let fourthStep = () => {
         .transition()
         .delay(300)
         .duration(800)
-        .attr('fill', 'red')
+        .attr(HTML_SVG_CONST, 'red')
 };
 
 let fifthStep = () => {
     guardTool.unmount();
     let node: Element = document.getElementById('drawing-canvas');
-    let basePolygon = list.polygons[1];
+    let basePolygon = list.polygons[2];
     let scaledPoint = getScaledPointsFromBounding(basePolygon,
         node.getBoundingClientRect(),
         25,
@@ -276,23 +215,23 @@ let fifthStep = () => {
     guardTool.mount(document.getElementById('drawing-canvas'), true);
     let svg = d3.select('#drawing-canvas')
     svg.append('circle')
-        .attr('cx', scaledPoint[0])
-        .attr('cy', scaledPoint[1])
-        .attr('r', 10)
-        .attr('fill', 'red')
-        .attr('stroke', 'black');
+        .attr(HTML_SVG_CONST.cx, scaledPoint[0])
+        .attr(HTML_SVG_CONST.cy, scaledPoint[1])
+        .attr(HTML_SVG_CONST.r, 10)
+        .attr(HTML_SVG_CONST.fill, 'red')
+        .attr(HTML_SVG_CONST.stroke, 'black');
     svg.append('circle')
-        .attr('cx', scaledPoint[2])
-        .attr('cy', scaledPoint[3])
-        .attr('r', 10)
-        .attr('fill', 'green')
-        .attr('stroke', 'black');
+        .attr(HTML_SVG_CONST.cx, scaledPoint[2])
+        .attr(HTML_SVG_CONST.cy, scaledPoint[3])
+        .attr(HTML_SVG_CONST.r, 10)
+        .attr(HTML_SVG_CONST.fill, 'green')
+        .attr(HTML_SVG_CONST.fill, 'black');
     svg.append('circle')
-        .attr('cx', scaledPoint[4])
-        .attr('cy', scaledPoint[5])
-        .attr('r', 10)
-        .attr('fill', 'blue')
-        .attr('stroke', 'black')
+        .attr(HTML_SVG_CONST.cx, scaledPoint[4])
+        .attr(HTML_SVG_CONST.cy, scaledPoint[5])
+        .attr(HTML_SVG_CONST.r, 10)
+        .attr(HTML_SVG_CONST.fill, 'blue')
+        .attr(HTML_SVG_CONST.stroke, 'black')
 };
 
 let sixthStep = () => {
@@ -327,22 +266,4 @@ let seventhStep = () => {
     }, 400);
 };
 
-function getScaledPointsFromBounding(polygon, bbox, verticalPadding, horizontalPadding) {
-    let scaledPoint = [];
-    let points =polygon.getPoints();
-    let w = bbox.width;
-    let h = bbox.height;
-    let targetWidth = (w - horizontalPadding * 2) / 2;
-    let targetHeight = (h - verticalPadding * 2) / 2;
-    // matrix transformation or changing the viewport
-    // would be a better way, especially if we want to manage resizing
-    let scaleX = d3.scaleLinear().domain([0, polygon.getMaxX()])
-        .range([w / 2 - targetWidth, w / 2 + targetWidth]);
-    let scaleY = d3.scaleLinear().domain([0, polygon.getMaxY()])
-        .range([h / 2 - targetHeight, h / 2 + targetHeight]);
-    for (let i = 0; i < points.length / 2; i++) {
-        scaledPoint.push(scaleX(points[i * 2]));
-        scaledPoint.push(scaleY(points[i * 2 + 1]));
-    }
-    return scaledPoint;
-}
+
