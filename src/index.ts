@@ -53,7 +53,9 @@ function main() {
     list.onSelectedItemCallback = (itemNumber: number) => {
 
         if (itemNumber === 0) {
-          tool.mount();
+            d3.select('.actions-tools').classed('hidden', true);
+            guardTool.unmount();
+            tool.mount();
         } else {
             let basePolygon = polygons[itemNumber];
             let scaledPoint = getScaledPointsFromBounding(basePolygon,
@@ -70,7 +72,6 @@ function main() {
 
     tool.onDrawingDoneCallback = (points) => {
         let polygon = new GuardedPolygon(points);
-        list.hide();
         switchToGuardMode(polygon);
     };
     //tool.mount();

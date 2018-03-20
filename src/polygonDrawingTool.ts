@@ -66,8 +66,8 @@ export class PolygonDrawingTool {
         let flattenedPoints = Array.prototype.concat(...this.points);
         this.svgNode.on('mousemove.draw', null);
         this.svgNode.on('mouseup.draw', null);
-        console.log(flattenedPoints);
         this.onDrawingDoneCallback(flattenedPoints);
+        this.points = [];
     }
 
     public hide() {
