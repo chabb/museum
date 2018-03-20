@@ -12,8 +12,13 @@ body {
     background-repeat: no-repeat;
 }
 
+.polygon-draw > polygon.polygon-overview {
+    stroke-dasharray: 2
+}
+
+
 .main-navbar {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #d1d1d1;
     margin-bottom: 15px;
 }
 
@@ -27,7 +32,8 @@ body {
     margin-left: 10px;
     margin-right: 10px;
     display: inline-block;
-    font-size: 1em;
+    font-weight: normal;
+    font-size: 15px;
     line-height: 20px;
     height: 20px;
     cursor: pointer;
@@ -78,6 +84,9 @@ body {
 .lower-content {
     display: flex;
     flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
 }
 
 .actions-tools {
@@ -125,10 +134,9 @@ body {
     align-items: center;
     overflow: auto;
 }
-
 .polygon-overview {
     fill: transparent;
-    stroke: #AAAAAA;
+    stroke: #D4D0D0;
     stroke-linejoin: round;
 }
 
