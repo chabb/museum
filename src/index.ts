@@ -20,7 +20,7 @@ import {Tutorial} from './tutorial';
 import {drawTriangle} from './tutoTriangle';
 import {ready, HTML_SVG_CONST, findTriangleCenter, trianglePath, getScaledPointsFromBounding} from './util';
 
-
+declare var window: any;
 
 ready(main);
 
@@ -112,6 +112,11 @@ function main() {
             tuto.start();
         }
     });
+
+    // forgive me
+    window.trymuseum = function() {
+        goToViz();
+    }
 }
 
 function goToViz() {
@@ -289,5 +294,4 @@ let seventhStep = () => {
         guardTool.solve(steps);
     }, 400);
 };
-
 

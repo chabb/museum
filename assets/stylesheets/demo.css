@@ -184,7 +184,7 @@ body {
     filter: grayscale(1.0);
 }
 
-.solve, .try_another, .skip, .previous, .next, .guard {
+.solve, .try_another, .skip, .previous, .next, .guard, .try-museum {
     cursor: pointer;
 }
 .intro-navigation {
