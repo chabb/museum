@@ -51,6 +51,8 @@ function main() {
     list.render();
     list.onSelectedItemCallback = (itemNumber: number) => {
 
+        d3.select('.complete').html('');
+        d3.select('.intro-content').html('');
         if (itemNumber === 0) {
             d3.select('.actions-tools').classed('hidden', true);
             guardTool.unmount();
