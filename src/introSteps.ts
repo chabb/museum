@@ -34,6 +34,6 @@ export let tutorialSteps = [
     ' the number of guards. <br/>' +
     ' Now you can try to colorize some museum to convince yourself. Place a guard on a vertex, a guard will keep an eyes ' +
         ' on all triangles that touches this particular vertex' +
-        '<div class="try-museum" onclick="trymuseum" > Let me try </div>'
+        '<div class="try-museum" onclick="trymuseum()" > Let me try </div>'
 ];
 
