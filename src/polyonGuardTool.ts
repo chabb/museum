@@ -85,7 +85,6 @@ export class PolygonGuardTool {
                 return;
             }
             let _step = flattenedSteps[step];
-            console.log('color', _step.color);
             if (!currentTransition) {
                 currentTransition = getTransitionForStep(_step, currentTransition);
             }
@@ -102,9 +101,11 @@ export class PolygonGuardTool {
         let selection = d3.select('.complete');
         if (this.polygon.isSolved()) {
             // do some amazing tstuff
+            selection.classed('hidden', false);
             selection.html(`Got it, you used ${this.polygon.getNumberOfGuards()} guards`);
         } else {
-            selection.html('NOT SOLVED !');
+            selection.classed('hidden', true);
+            selection.html('');
         }
     }
 
@@ -141,7 +142,6 @@ export class PolygonGuardTool {
 
     private updeGuardOnNode(node, vertexIndex) {
         // not very efficient, we can have addGuard return a boolean and pass it
-        console.log('UPDATE GUARD', vertexIndex);
         let guarded = this.polygon.guardPosition.has(vertexIndex);
         d3.select(node)
             .transition()
@@ -160,7 +160,6 @@ export class PolygonGuardTool {
         for (let i = 0; i < points.length / 2; i++) {
             p.push([points[i * 2], points[i * 2 + 1]]);
         }
-        console.log('--- new circle', p);
 
         let circles = this.circleGroup.selectAll('.circles')
             .data(p);
@@ -179,7 +178,6 @@ export class PolygonGuardTool {
                 self.circleClick(d, i, this)
             })
             .on('mouseenter', function(d){
-                console.log('-------sadsdsad');
                 d3.select(this).transition()
                     .duration(100)
                     .attr('r', 10);
@@ -235,8 +233,6 @@ export class PolygonGuardTool {
             triangles.push(points);
             points.guarded = triangle.guarded; // a bit ugly
         });
-
-        console.log('NEW TRIANGLE', triangles);
 
         let selection = this.triangleGroup.selectAll('.draw-triangles')
             .data(triangles);

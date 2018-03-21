@@ -30,7 +30,6 @@ export class PolygonsListComponent {
         // we should put a render somewhere
         let scaleX = d3.scaleLinear().range([0, this.itemWidth]);
         let scaleY = d3.scaleLinear().range([0, this.itemHeight]);
-        console.log('SHHEEE', this.mountNode);
         let self = this;
         let svg = d3.select(this.mountNode)
             .selectAll(HTML_SVG_CONST.svg)
@@ -66,7 +65,6 @@ export class PolygonsListComponent {
                 self.onSelectedItemCallback(i);
                 // it's rushed
                 d3.selectAll('.polygon-overview').classed('selected', false);
-                console.log('boo', this);
                 d3.select(this).classed('selected', true)
             });
     }

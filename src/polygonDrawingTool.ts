@@ -15,6 +15,7 @@ export class PolygonDrawingTool {
     public mount() {
         let g: any, startPoint: any;
 
+        this.svgNode.classed('drawing', true);
         let self = this;
         this.svgNode.on('mouseup.draw', function() {
 
@@ -68,9 +69,11 @@ export class PolygonDrawingTool {
         this.svgNode.on('mouseup.draw', null);
         this.onDrawingDoneCallback(flattenedPoints);
         this.points = [];
+        this.svgNode.classed('drawing', false);
     }
 
     public hide() {
+        this.svgNode.classed('drawing', false);
         this.svgNode.select('g.drawPoly').remove();
         this.svgNode.on('mousemove.draw', null);
         this.svgNode.on('mouseup.draw', null);

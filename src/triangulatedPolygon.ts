@@ -69,7 +69,6 @@ export class TriangulatedPolygon extends Polygon {
 
         vertexIdxToTriangles.forEach((triangles, idx) => {
 
-            console.log('WILL CHECK', idx, triangles);
             // we need to change the order of triangle, so we always start
             // with a triangle that have a common segment, this will
             // ensure we always choose a triangle that is already 2-colored
@@ -83,8 +82,6 @@ export class TriangulatedPolygon extends Polygon {
                 if ( triangle.includes(idx) && triangle.includes(idx -1)) {
                     commonWithOlderVertix.push(triangle);
                     commons = commons.concat(triangle);
-                    console.log(triangle, idx, idx -1, commons);
-
                 } else if (idx  == 0 && processedTriangle === 0) {
                     commonWithOlderVertix.push(triangle);
                     commons = commons.concat(triangle);
@@ -94,15 +91,11 @@ export class TriangulatedPolygon extends Polygon {
                 }
                 processedTriangle++;
             });
-            console.log('find ', commons);
-
-
             // we use recursion to sort the remaining triangles, as soon as we
             // a triangle that has a common edge, we remove it and put it on
             // our list of triangle to process
             let finalOrder: Triangle[] = [];
             function checkTriangle(triangles: Array<Triangle>, order: Array<Triangle>) {
-                console.log('--', triangles, remains);
                 if (triangles.length === 0) {
                     return;
                 } else if (triangles.length === 1) {
@@ -123,7 +116,6 @@ export class TriangulatedPolygon extends Polygon {
 
                     if (hasVertixWithPastTriangle) {
                         order.push(triangle);
-                        console.log('find ', triangle);
                         commons = commons.concat(triangle);
                     } else {
                         remains.push(triangle);

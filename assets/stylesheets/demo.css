@@ -192,7 +192,7 @@ body {
     flex-direction: row;
 }
 
-.previous, .next, .skip, .solve {
+.previous, .next, .skip, .solve, .try-museum {
     flex:auto;
     flex-shrink: 1;
     height: 35px;
@@ -227,7 +227,7 @@ body {
     border: none;
 }
 
-.intro-content {
+.intro-content, .complete {
     text-align: justify;
     font-size: 15px;
     line-height: 22px;
@@ -258,4 +258,9 @@ body {
     font-weight: 800;
     font-size: 18px;
     margin-bottom: 14px;
+}
+
+#drawing-canvas.drawing {
+   border: 1px dashed #D4D0D0;
+    border-radius: 2px;
 }

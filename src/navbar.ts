@@ -13,7 +13,7 @@ const selectedClass = 'selected';
 
 export function switchNavbarToIntro() {
     document.getElementById(selectorNavIntro).classList.add(selectedClass);
-    document.getElementById(selectorNavMuseum).classList.add(selectedClass);
+    document.getElementById(selectorNavMuseum).classList.remove(selectedClass);
     document.getElementsByClassName('sub-title')[0].innerHTML = 'Introduction';
 }
 

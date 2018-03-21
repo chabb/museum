@@ -33,6 +33,7 @@ export let tutorialSteps = [
     ' r + g + b would be greater than n; which cannot happen. So we can say that r is at most n/3, and so we have an upper bound of n/3 for' +
     ' the number of guards. <br/>' +
     ' Now you can try to colorize some museum to convince yourself. Place a guard on a vertex, a guard will keep an eyes ' +
-        ' on all triangles that touches this particular vertex'
+        ' on all triangles that touches this particular vertex' +
+        '<div class="try-museum"> Let me try </div>'
 ];
 

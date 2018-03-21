@@ -11,7 +11,7 @@ import * as d3 from 'd3';
 // src imports
 import {GuardedPolygon} from './guardedPolygon';
 import {tutorialSteps} from './introSteps';
-import {switchNavbarToMuseum} from './navbar';
+import {switchNavbarToMuseum, switchNavbarToIntro} from './navbar';
 import {PolygonDrawingTool} from './polygonDrawingTool';
 import {PolygonGuardTool} from './polyonGuardTool';
 import {PolygonsListComponent} from './polygonList';
@@ -44,7 +44,6 @@ function main() {
         new GuardedPolygon(hell),
         new GuardedPolygon(buggy),
     ];
-    console.log(document.getElementsByClassName('shapes-preview')[0]);
     list = new PolygonsListComponent(
         'red', 'black');
     list.mountNode = document.getElementsByClassName('shapes-preview')[0];
@@ -73,6 +72,7 @@ function main() {
     tool.onDrawingDoneCallback = (points) => {
         let polygon = new GuardedPolygon(points);
         switchToGuardMode(polygon);
+        guardTool.updateGuardSection();
     };
     //tool.mount();
 
@@ -89,17 +89,38 @@ function main() {
         () => {}
     ];
     tuto.skipCallback = () => {
-        tuto._unMount();
-        d3.select('.intro-navigation').classed('hidden', true);
-        switchToMuseumMode();
-        switchNavbarToMuseum();
+        goToViz();
     };
     tuto.mount('.next', '.previous', '.skip');
 
     tuto.start();
     list.hide();
+
+    d3.select('#nav-museum').on('click', () => {
+        goToViz();
+    });
+
+    d3.select('#nav-intro').on('click', () => {
+        if (!tuto.mounted) {
+            d3.select('.toolbar-header').classed('hidden', true);
+            d3.select('.shapes-preview').classed('hidden', true);
+            d3.select('.intro-navigation').classed('hidden', false);
+            d3.select('.nav-title').classed('hidden', false);
+            d3.select('.actions-tools').classed('hidden', true);
+            switchNavbarToIntro();
+            tuto.mount('.next', '.previous', '.skip');
+            tuto.start();
+        }
+    });
 }
 
+function goToViz() {
+    tuto.unmount();
+    d3.select('.intro-navigation').classed('hidden', true);
+    d3.select('.nav-title').classed('hidden', true);
+    switchToMuseumMode();
+    switchNavbarToMuseum();
+}
 
 
 function switchToGuardMode(polygon) {

@@ -18,6 +18,8 @@ export class Tutorial {
     public _unMount: Function;
     public skipCallback: Function;
 
+    public mounted: boolean;
+
     constructor() {
 
     }
@@ -32,11 +34,13 @@ export class Tutorial {
             d3.select(skipSelector).on('click', null);
             d3.select('#drawing-canvas').html('');
             d3.select('.intro-content').html('');
-        }
+        };
+        this.mounted = true;
     }
 
     public unmount() {
         this._unMount();
+        this.mounted = false;
     }
 
     public start() {

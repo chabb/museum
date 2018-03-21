@@ -112,7 +112,6 @@ export class GuardedPolygon extends TriangulatedPolygon {
                 if (!this.verticesColor[vertexIndex]) {
                     vertexToColorize.push(vertexIndex)
                 } else {
-                    console.log('find a color', this.verticesColor[vertexIndex], vertexIndex);
                     usedColor[this.verticesColor[vertexIndex]] = 1;
                 }
             });
@@ -123,7 +122,6 @@ export class GuardedPolygon extends TriangulatedPolygon {
                 return acc;
             }, []);
             let step: any[] = [];
-            console.log('will use', colorToUse, 'to', vertexToColorize);
             vertexToColorize.forEach((vertexIdx, arrayIdx) => {
                 this.verticesColor[vertexIdx] = colorToUse[arrayIdx];
                 step.push({
@@ -132,7 +130,6 @@ export class GuardedPolygon extends TriangulatedPolygon {
                     triangle: triangle
                 })
             });
-            console.log('STEP', step);
             if (step.length > 0) {
                 steps.push(step);
             }
